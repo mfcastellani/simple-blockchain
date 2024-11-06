@@ -110,6 +110,35 @@ impl Blockchain {
     }
 }
 
+fn main() {
+    let mut blockchain = Blockchain::new();
+    let mut transaction_id = 1;
+
+    for block_id in 1..=20 {
+        let transactions: Vec<Transaction> = (0..5)
+            .map(|_| {
+                let transaction = Transaction {
+                    id: transaction_id,
+                    origin: format!("User{}", transaction_id),
+                    destination: format!("User{}", transaction_id + 1),
+                    quantity: transaction_id * 10,
+                };
+                transaction_id += 1;
+                transaction
+            })
+            .collect();
+
+        blockchain.add_block(transactions);
+        println!("Added block with ID: {}", block_id);
+    }
+
+    if blockchain.validate_chain() {
+        println!("The blockchain is valid.");
+    } else {
+        println!("The blockchain is not valid.");
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -194,31 +223,3 @@ mod tests {
     }
 }
 
-fn main() {
-    let mut blockchain = Blockchain::new();
-    let mut transaction_id = 1;
-
-    for block_id in 1..=20 {
-        let transactions: Vec<Transaction> = (0..5)
-            .map(|_| {
-                let transaction = Transaction {
-                    id: transaction_id,
-                    origin: format!("User{}", transaction_id),
-                    destination: format!("User{}", transaction_id + 1),
-                    quantity: transaction_id * 10,
-                };
-                transaction_id += 1;
-                transaction
-            })
-            .collect();
-
-        blockchain.add_block(transactions);
-        println!("Added block with ID: {}", block_id);
-    }
-
-    if blockchain.validate_chain() {
-        println!("The blockchain is valid.");
-    } else {
-        println!("The blockchain is not valid.");
-    }
-}
